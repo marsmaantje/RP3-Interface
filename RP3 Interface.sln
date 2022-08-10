@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RP3 Interface", "RP3 Interface\RP3 Interface.csproj", "{272619EF-4F7C-4AAF-ADD1-291A4489A057}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{272619EF-4F7C-4AAF-ADD1-291A4489A057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{272619EF-4F7C-4AAF-ADD1-291A4489A057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{272619EF-4F7C-4AAF-ADD1-291A4489A057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{272619EF-4F7C-4AAF-ADD1-291A4489A057}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6A3F131-B6FE-4829-B422-D578C49A1355}
+	EndGlobalSection
+EndGlobal
