@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Diagnostics;
+using Fleck;
 
 
 namespace RP3_Interface
@@ -17,6 +18,8 @@ namespace RP3_Interface
         public static bool formOpen = true;
         double lastRps = 0;
         double change = 0;
+        WebSocketServer wss;
+        List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
 
 
         public Form1()
@@ -34,10 +37,18 @@ namespace RP3_Interface
             this.FormClosing += formClosing;
             serialPort1.DataReceived += dataReceived;
 
+            wss = new WebSocketServer("ws://127.0.0.1:2070");
+            wss.Start( socket =>
+            {
+                socket.OnOpen = () => { allSockets.Add(socket); };
+                socket.OnClose = () => { allSockets.Remove(socket); };
+            });
+            
         }
 
         void formClosing(object sender, EventArgs e)
         {
+            wss.Dispose();
             serialPort1.Close();
             formOpen = false;
         }
@@ -133,6 +144,11 @@ namespace RP3_Interface
         {
             addPoint(0, lastRps, 300, true, false);
             addPoint(1, change, 300, true, true);
+
+            foreach (var connection in allSockets)
+            {
+                connection.Send(lastRps.ToString());
+            }
         }
 
         private void addPoint(int chartIndex, double value, int pointCount, bool scaleMax = false, bool scaleMin = false)
