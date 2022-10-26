@@ -53,17 +53,6 @@ namespace RP3_Interface
             formOpen = false;
         }
 
-        private void chart1_Click(object sender, EventArgs e)
-        {
-            //add a point relative to mouse y position
-            chart1.Series.First()?.Points.AddY(MousePosition.Y);
-            if (chart1.Series.First()?.Points.Count > 6)
-            {
-                //remove first index
-                chart1.Series.First()?.Points.RemoveAt(0);
-            }
-        }
-
         private void FindMachine_Click(object sender, EventArgs e)
         {
             string selectedName = "";

@@ -39,6 +39,7 @@
             this.FindMachine = new System.Windows.Forms.Button();
             this.PortsList = new System.Windows.Forms.CheckedListBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,13 +71,12 @@
             this.chart1.Size = new System.Drawing.Size(1027, 619);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
-            this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // FindMachine
             // 
-            this.FindMachine.Location = new System.Drawing.Point(56, 67);
+            this.FindMachine.Location = new System.Drawing.Point(50, 67);
             this.FindMachine.Name = "FindMachine";
-            this.FindMachine.Size = new System.Drawing.Size(114, 23);
+            this.FindMachine.Size = new System.Drawing.Size(120, 23);
             this.FindMachine.TabIndex = 3;
             this.FindMachine.Text = "Find machine";
             this.FindMachine.UseVisualStyleBackColor = true;
@@ -87,17 +87,29 @@
             this.PortsList.CheckOnClick = true;
             this.PortsList.FormattingEnabled = true;
             this.PortsList.HorizontalScrollbar = true;
-            this.PortsList.Location = new System.Drawing.Point(56, 156);
+            this.PortsList.Location = new System.Drawing.Point(50, 134);
             this.PortsList.Name = "PortsList";
             this.PortsList.Size = new System.Drawing.Size(120, 94);
             this.PortsList.TabIndex = 5;
             this.PortsList.SelectedIndexChanged += new System.EventHandler(this.PortsList_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(273, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Websocket available on: \"ws://127.0.0.1:2070\"";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1321, 865);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.PortsList);
             this.Controls.Add(this.FindMachine);
             this.Controls.Add(this.chart1);
@@ -105,6 +117,7 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -114,6 +127,7 @@
         private System.Windows.Forms.Button FindMachine;
         private System.Windows.Forms.CheckedListBox PortsList;
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
