@@ -7,8 +7,8 @@ namespace RP3_Interface
     public class State
     {
         //angular values (instant, end, start)-> in Rower
-        protected float theta_start, theta_end;
-        protected float w_end, w_start;
+        public float theta_start, theta_end;
+        public float w_end, w_start;
         public float linearDist, linearVel;
        
 
@@ -26,8 +26,9 @@ namespace RP3_Interface
         public void setEnd(float t, float w)
         {
             theta_end = t;
-            w_start = w;
+            w_end = w;
         }
+
 
         public void UpdateValues()
         {
@@ -55,10 +56,12 @@ namespace RP3_Interface
 
     public class Recovery: State
     {        
-        public float calcDF(float I, float recTime)
+        public float calcDF(float I, float recTime, float currDF)
         {
+           
             //Inertia * angular accleration / recovery time
-            return (I * ((1 / this.w_start) - (1 / this.w_end)) / recTime) * 1000000;
+            if (w_start <= 0 || w_end <= 0) return currDF;
+            else return (I * ((1 / this.w_start) - (1 / this.w_end)) * recTime * 1000000);
         }
     }
 }

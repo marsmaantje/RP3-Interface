@@ -67,7 +67,7 @@ namespace RP3_Interface
 
         //angular values
         public float currTheta, currW;
-        private float dragFactor;
+        public float dragFactor;
         private float conversionFactor;
 
 
@@ -111,21 +111,25 @@ namespace RP3_Interface
                 drive.linearCalc(conversionFactor, currTheta, currW);
                 Console.Write(string.Format("LinearDist : {0:0.000#####}", drive.linearDist));
                 Console.WriteLine(string.Format(" LinearVel : {0:0.000#####}", drive.linearVel));
+                Console.Write(string.Format("w_start : {0:0.000#####}", drive.w_start));
+                Console.WriteLine(string.Format(" w_end : {0:0.000#####}", drive.w_end));
             }
             if (currState == State.Recovery) {
                 recovery.linearCalc(conversionFactor, currTheta, currW);
                 Console.Write(string.Format("LinearDist : {0:0.000#####}", recovery.linearDist));
                 Console.WriteLine(string.Format(" LinearVel : {0:0.000#####}", recovery.linearVel));
+                Console.Write(string.Format("w_start : {0:0.000#####}", recovery.w_start));
+                Console.WriteLine(string.Format(" w_end : {0:0.000#####}", recovery.w_end));
             }
 
             //debugger
             Console.WriteLine("Current state: "+ currState.ToString());
-            /*Console.WriteLine(string.Format("Total impulses : {0:0.000#####}", this.totalImpulse));
+            Console.WriteLine(string.Format("Total impulses : {0:0.000#####}", this.totalImpulse));
             Console.WriteLine(string.Format("deltaTime : {0:0.000#####}", this.currentDt));
             Console.WriteLine(string.Format("DF : {0:0.000#####}", this.dragFactor));
             Console.WriteLine(string.Format("CF : {0:0.000#####}", this.conversionFactor));
-            Console.Write(string.Format("AngDis : {0:0.000#####}", currTheta));
-            Console.WriteLine(string.Format(" angVel : {0:0.000#####}", currW));*/
+            //Console.Write(string.Format("AngDis : {0:0.000#####}", currTheta)); 
+            //Console.WriteLine(string.Format(" angVel : {0:0.000#####}", currW));
             Console.WriteLine("");
 
             //send back data to Neos
@@ -184,7 +188,8 @@ namespace RP3_Interface
                     this.recovery.setEnd(t, w);
                     this.drive.setStart(t, w);
 
-                    this.dragFactor = this.recovery.calcDF(I, time);
+                    
+                    this.dragFactor = this.recovery.calcDF(I, time, this.dragFactor);
                     this.conversionFactor = updateConversionFactor();
 
                     this.recovery.linearCalc(conversionFactor, t, w);
@@ -200,7 +205,7 @@ namespace RP3_Interface
 
         private float updateConversionFactor()
         {
-            return (float)Math.Pow(((dragFactor/1000000) / magicFactor), 1f / 3f);
+            return (float)Math.Pow(((Math.Abs(dragFactor)/1000000) / magicFactor), 1f / 3f);
         }
 
         public string SendDataFormat()
