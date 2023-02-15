@@ -16,10 +16,17 @@ namespace RP3_Interface
     public partial class Form1 : Form
     {
         public static bool formOpen = true;
+        string lastMessage="";
+
+        StringBuilder log = new StringBuilder();
+
         double lastRps = 0;
         double change = 0;
         WebSocketServer wss;
         List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
+
+        //Create rower instance for physics calculations
+        Rower rower = new Rower();
 
 
         public Form1()
@@ -40,10 +47,18 @@ namespace RP3_Interface
             wss = new WebSocketServer("ws://127.0.0.1:2070");
             wss.Start( socket =>
             {
-                socket.OnOpen = () => { allSockets.Add(socket); };
+                socket.OnOpen = () =>
+                {
+                    allSockets.Add(socket); 
+                };
                 socket.OnClose = () => { allSockets.Remove(socket); };
+                socket.OnMessage += OnMessage;
             });
-            
+
+
+
+            //ensure its empty
+            log.Clear();
         }
 
         void formClosing(object sender, EventArgs e)
@@ -87,7 +102,7 @@ namespace RP3_Interface
         {
             if (!serialPort1.IsOpen || serialPort1.BytesToRead < 2)
                 return;
-            Console.WriteLine(serialPort1.BytesToRead);
+            //Console.WriteLine("Serialport bytes to read: "+ serialPort1.BytesToRead);
 
             byte[] input = new byte[serialPort1.BytesToRead];
             int valueCount = serialPort1.Read(input, 0, input.Length);
@@ -96,8 +111,15 @@ namespace RP3_Interface
             while (i < valueCount && i < input.Length)
             {
                 int value = ((input[i] & 0xff) << 8 | (input[i + 1] & 0xff)) & 0xffff;
-                double wheelValue = value / 750000.0;
-                double rps = 1 / (wheelValue * 4);
+                double wheelValue = value / 750000.0; //the deltatime between impulses
+                double rps = 1 / (wheelValue * 4); //rotation per second, if deltatime is same throughout one rotation
+
+                //provide rower
+                this.rower.onImpulse(wheelValue);
+
+                //chart
+                //addPoint(1, change, 500, true, true);
+
 
                 /*
                 chart1.Series[0]?.Points.AddY(rps);
@@ -118,9 +140,13 @@ namespace RP3_Interface
                 */
                 //addPoint(0, rps, 500, true);
 
-                change = rps - lastRps;
-                lastRps = rps;
-                //addPoint(1, change, 500, true, true);
+
+
+
+
+                //change = rps - lastRps;
+                ///lastRps = rps;
+                //addPoint(1, rower.currentDt, 500, true, true);
 
                 i += 4;
             }
@@ -131,13 +157,29 @@ namespace RP3_Interface
         /// </summary>
         private void Update(object sender, EventArgs e)
         {
-            addPoint(0, lastRps, 300, true, false);
-            addPoint(1, change, 300, true, true);
+            addPoint(0, rower.currW, 300, true, false);
+            addPoint(1, rower.currentDt, 300, true, true);
+
+            //addPoint(0, lastRps, 300, true, false);
+            //addPoint(1, change, 300, true, true);
 
             foreach (var connection in allSockets)
             {
-                connection.Send(lastRps.ToString());
+                //connection.Send(lastRps.ToString());
+                //called every frame
+                connection.Send(this.rower.SendDataFormat());
             }
+        }
+
+
+        //Data incoming, event triggered
+        //what data incoming-> cast or do something...
+        void OnMessage(string message)
+        {
+            lastMessage = message;
+            log.Append(message);
+            //Message indicate Cath or Finish
+            this.rower.onStateSwitch(message);
         }
 
         private void addPoint(int chartIndex, double value, int pointCount, bool scaleMax = false, bool scaleMin = false)
@@ -152,6 +194,8 @@ namespace RP3_Interface
             if (scaleMax)
             {
                 double maxChartValue = 0;
+
+                //series adjusted during runtime, so make a list beforehand
                 foreach (var point in chart1.Series[chartIndex]?.Points)
                 {
                     if (point.YValues[0] > maxChartValue)
@@ -163,6 +207,7 @@ namespace RP3_Interface
             if (scaleMin)
             {
                 double minChartValue = 0;
+                
                 foreach (var point in chart1.Series[chartIndex]?.Points)
                 {
                     if (point.YValues[0] < minChartValue)
