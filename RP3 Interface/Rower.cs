@@ -36,6 +36,12 @@ using System.Diagnostics;
  * for later:
  * RP3 flywheel weight: 21.5lkg
  * 
+ * 
+ * 16-02 meeting Laura
+ * 
+ * Fixed df of 120 (indicates heavy rowing)
+ * Moment of cycle indication
+ * 
  */
 
 
@@ -144,6 +150,8 @@ namespace RP3_Interface
             Console.WriteLine("Incoming: " + data);
             float[] values = convert(d);
 
+
+            //end of state is called on Catch, and finish. Need switch
             EndOfState(values, inertia, currTheta, currW);
 
             if (d.StartsWith("C"))
@@ -189,7 +197,7 @@ namespace RP3_Interface
                     this.drive.setStart(t, w);
 
                     
-                    this.dragFactor = this.recovery.calcDF(I, time, this.dragFactor);
+                    //this.dragFactor = this.recovery.calcDF(I, time, this.dragFactor);
                     this.conversionFactor = updateConversionFactor();
 
                     this.recovery.linearCalc(conversionFactor, t, w);
@@ -220,7 +228,7 @@ namespace RP3_Interface
             this.totalImpulse = 0;
             this.TotalTime = 0;
             this.AverageQueue.Clear();
-            this.dragFactor = 100; // between 100 and 125, 1e-6 is accounted for
+            this.dragFactor = 120; // between 100 and 125, 1e-6 is accounted for
             this.conversionFactor = updateConversionFactor();
         }
 
