@@ -21,12 +21,14 @@ namespace RP3_Interface
         {
             theta_start = t;
             w_start = w;
+            Console.Write(" NEW w_start: "+ w);
         }
 
         public void setEnd(float t, float w)
         {
             theta_end = t;
             w_end = w;
+            Console.Write("NEW w_end: "+ w);
         }
 
 
@@ -45,7 +47,7 @@ namespace RP3_Interface
         {
             theta_start = theta_end = 0f;
             w_start = w_end = 0f;
-            linearDist = linearVel = 0f;
+            //linearDist = linearVel = 0f;
         }
     }
     
@@ -56,12 +58,16 @@ namespace RP3_Interface
 
     public class Recovery: State
     {        
-        public float calcDF(float I, float recTime, float currDF)
+        public float calcDF(float I, float recTime, float currDF, bool f)
         {
-           
+            //Console.WriteLine("Time ", recTime);
+            //Console.Write(string.Format("w_start : {0:0.000#####}", w_start));
+            //Console.WriteLine(string.Format(" w_end : {0:0.000#####}", w_end));
             //Inertia * angular accleration / recovery time
-            if (w_start <= 0 || w_end <= 0) return currDF;
-            else return (I * ((1 / this.w_start) - (1 / this.w_end)) * recTime * 1000000);
+            Console.WriteLine("df ", currDF);
+            if (f == true) return currDF;
+            else if (w_start <= 0 || w_end <= 0) return currDF;
+            else return (I * ((1 / this.w_start) - (1 / this.w_end)) * recTime);
         }
     }
 }
