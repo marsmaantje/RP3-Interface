@@ -56,6 +56,11 @@ namespace RP3_Interface
         private State currState;
         private Drive drive;
         private Recovery recovery;
+
+        //dragfactor fixed (or dynamic)
+        private bool fixedValue=true;
+        private bool resistanceHigh=false;
+
         
         //RP3 input
         public float currentDt;
@@ -87,6 +92,9 @@ namespace RP3_Interface
 
             AverageQueue = new Queue<double>(n_runningAvg);
 
+            if (this.resistanceHigh) this.dragFactor = 130; // between 100 and 125, 1e-6 is accounted for
+            else this.dragFactor = 120;
+
             reset(); //set initial values
         }
 
@@ -112,6 +120,9 @@ namespace RP3_Interface
             //angular values
             this.currTheta = angularDis * totalImpulse;
             this.currW = angularDis / this.currentDt;
+
+            Console.WriteLine(string.Format("currW : {0:0.000#####}", this.currW));
+            Console.WriteLine(string.Format(" LinearVel : {0:0.000#####}", drive.linearVel));
 
             //convert from rotational to linear values
             if (currState == State.Drive) {
@@ -218,7 +229,7 @@ namespace RP3_Interface
                     this.drive.setStart(t, w);
 
                     
-                    this.dragFactor = this.recovery.calcDF(I, time, this.dragFactor);
+                    this.dragFactor = this.recovery.calcDF(I, time, this.dragFactor, this.fixedValue);
                     this.conversionFactor = updateConversionFactor();
 
                     this.recovery.linearCalc(conversionFactor, t, w);
@@ -254,7 +265,6 @@ namespace RP3_Interface
             this.totalImpulse = 0;
             this.TotalTime = 0;
             this.AverageQueue.Clear();
-            this.dragFactor = 120; // between 100 and 125, 1e-6 is accounted for
             this.conversionFactor = updateConversionFactor();
         }
 

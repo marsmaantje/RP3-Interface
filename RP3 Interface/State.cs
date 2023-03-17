@@ -58,14 +58,15 @@ namespace RP3_Interface
 
     public class Recovery: State
     {        
-        public float calcDF(float I, float recTime, float currDF)
+        public float calcDF(float I, float recTime, float currDF, bool f)
         {
             //Console.WriteLine("Time ", recTime);
             //Console.Write(string.Format("w_start : {0:0.000#####}", w_start));
             //Console.WriteLine(string.Format(" w_end : {0:0.000#####}", w_end));
             //Inertia * angular accleration / recovery time
             Console.WriteLine("df ", currDF);
-            if (w_start <= 0 || w_end <= 0) return currDF;
+            if (f == true) return currDF;
+            else if (w_start <= 0 || w_end <= 0) return currDF;
             else return (I * ((1 / this.w_start) - (1 / this.w_end)) * recTime);
         }
     }
